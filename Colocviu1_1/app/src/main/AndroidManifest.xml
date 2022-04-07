@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Colocviu1_1">
         <activity
+            android:name=".Colocviu1_1SecondaryActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="ro.pub.cs.systems.eim.Colocviu1_1.intent.action.Colocviu1_1SecondaryActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Colocviu1_1MainActivity"
             android:exported="true">
             <intent-filter>
@@ -18,6 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+        android:name=".Colocviu1_1Service"
+        android:enabled="true"
+        android:exported="false" />
+
     </application>
 
 </manifest>
