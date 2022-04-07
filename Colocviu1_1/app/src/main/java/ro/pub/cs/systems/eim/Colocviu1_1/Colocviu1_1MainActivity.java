@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +24,7 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
     private Button westButton;
     private Button secondaryActivityButton;
 
+    private IntentFilter intentFilter = new IntentFilter();
 
     private int serviceStatus = Constants.SERVICE_STOPPED;
     private int noOfPressedButtons = 0;
@@ -82,6 +84,8 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
                 noOfPressedButtons = savedInstanceState.getInt(Constants.NO_OF_BUTTON_PRESSES);
             }
         }
+
+        intentFilter.addAction(Constants.SERVICE_INTENT);
     }
 
     @Override
@@ -114,6 +118,17 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "The " + buttonPressed + " button was pressed", Toast.LENGTH_LONG).show();
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
     }
 
     private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
