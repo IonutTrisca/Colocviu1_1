@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.Date;
+
 public class ProcessingThread extends Thread {
     private Context context = null;
     private boolean isRunning = true;
@@ -16,25 +18,22 @@ public class ProcessingThread extends Thread {
     public ProcessingThread(Context context, String instructions) {
         this.context = context;
         this.intructions = instructions;
-
     }
 
     @Override
     public void run() {
         Log.d(Constants.PROCESSING_THREAD_TAG, "Thread has started!");
-        while (isRunning) {
-            sendMessage();
-            sleep();
-        }
+        sleep();
+        sendMessage();
         Log.d(Constants.PROCESSING_THREAD_TAG, "Thread has stopped!");
     }
 
 
     private void sendMessage() {
         Intent intent = new Intent();
-        intent.setAction(Constants.actionTypes[random.nextInt(Constants.actionTypes.length)]);
+        intent.setAction(Constants.SERVICE_INTENT);
         intent.putExtra(Constants.BROADCAST_RECEIVER_EXTRA,
-                new Date(System.currentTimeMillis()) + " " + arithmeticMean + " " + geometricMean);
+                new Date(System.currentTimeMillis()) + " " + intructions);
         context.sendBroadcast(intent);
     }
 

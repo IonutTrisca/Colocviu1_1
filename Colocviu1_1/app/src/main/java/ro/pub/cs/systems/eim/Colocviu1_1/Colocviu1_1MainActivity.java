@@ -3,6 +3,8 @@ package ro.pub.cs.systems.eim.Colocviu1_1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,13 +23,16 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
     private Button westButton;
     private Button secondaryActivityButton;
 
+
+    private int serviceStatus = Constants.SERVICE_STOPPED;
     private int noOfPressedButtons = 0;
 
     private ButtonClickListener buttonClickListener = new ButtonClickListener();
+
     private class ButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            switch(view.getId()) {
+            switch (view.getId()) {
                 case R.id.secondary_activity_button:
                     Intent intent = new Intent(getApplicationContext(), Colocviu1_1SecondaryActivity.class);
                     intent.putExtra(ro.pub.cs.systems.eim.Colocviu1_1.Constants.INSTRUCTIONS, buttonPresses);
@@ -37,11 +42,19 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
                     historyTextView.setText(buttonPresses);
                     break;
                 default:
-                    buttonPresses += ((Button)view).getText().toString() + ", ";
+                    buttonPresses += ((Button) view).getText().toString() + ", ";
                     historyTextView.setText(buttonPresses);
                     noOfPressedButtons++;
                     Toast.makeText(view.getContext(), "Number of button presses " + noOfPressedButtons, Toast.LENGTH_LONG).show();
                     break;
+            }
+
+            if (buttonPresses.contains("West") && buttonPresses.contains("North") && buttonPresses.contains("South") && buttonPresses.contains("East")
+                && serviceStatus == Constants.SERVICE_STOPPED) {
+                Intent intent = new Intent(getApplicationContext(), Colocviu1_1Service.class);
+                intent.putExtra(Constants.INSTRUCTIONS, buttonPresses);
+                getApplicationContext().startService(intent);
+                serviceStatus = Constants.SERVICE_STARTED;
             }
         }
     }
@@ -51,7 +64,7 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_colocviu1_1_main);
 
-        historyTextView = (TextView)findViewById(R.id.history_text_view);
+        historyTextView = (TextView) findViewById(R.id.history_text_view);
         northButton = (Button) findViewById(R.id.north_button);
         southButton = (Button) findViewById(R.id.south_button);
         eastButton = (Button) findViewById(R.id.east_button);
@@ -95,11 +108,30 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
                 buttonPressed = "Register";
             }
 
-            if (resultCode == Constants.CANCEL_BUTTON_PRESS){
+            if (resultCode == Constants.CANCEL_BUTTON_PRESS) {
                 buttonPressed = "Cancel";
             }
 
             Toast.makeText(this, "The " + buttonPressed + " button was pressed", Toast.LENGTH_LONG).show();
         }
     }
+
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(Constants.BROADCAST_RECEIVER_TAG, intent.getStringExtra(Constants.BROADCAST_RECEIVER_EXTRA));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this, Colocviu1_1Service.class);
+        stopService(intent);
+        super.onDestroy();
+    }
 }
+
+    

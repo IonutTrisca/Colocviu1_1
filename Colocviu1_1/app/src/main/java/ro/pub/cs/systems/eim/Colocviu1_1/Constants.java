@@ -10,4 +10,9 @@ public interface Constants {
     final public static int CANCEL_BUTTON_PRESS = 1;
     final public static String PROCESSING_THREAD_TAG = "[Processing Thread]";
     final public static String SERVICE_INTENT = "ro.pub.cs.systems.eim.Colocviu1_1.service";
+    final public static String BROADCAST_RECEIVER_EXTRA = "message";
+    final public static String BROADCAST_RECEIVER_TAG = "[Message]";
+
+    final public static int SERVICE_STOPPED = 0;
+    final public static int SERVICE_STARTED = 1;
 }
